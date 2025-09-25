@@ -1,5 +1,6 @@
 [
   { "id": "intro", "title": "Introduction", "file": "intro.md" },
   { "id": "setup", "title": "Setup", "file": "setup.md" },
-  { "id": "usage", "title": "Usage", "file": "usage.md" }
+  { "id": "usage", "title": "Usage", "file": "usage.md" },
+  { "id": "FAQ", "title": "FAQ", "file": "faq.md" },
 ]
