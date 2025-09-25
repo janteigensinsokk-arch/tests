@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { display: grid; grid-template-columns: 1fr 3fr; min-height: 100vh; margin: 0; font-family: sans-serif; }
+    aside { background: #f3f3f3; padding: 1rem; border-right: 1px solid #ccc; }
+    aside h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    aside button { display: block; width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.5rem; background: #fff; cursor: pointer; text-align: left; }
+    aside button.active { background: #0070f3; color: white; border-color: #0070f3; }
+    main { padding: 1.5rem; }
+    article { max-width: 800px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <aside>
+    <h2>Docs</h2>
+    <div id="sidebar"></div>
+  </aside>
+  <main>
+    <article id="content"></article>
+  </main>
+
+  <script>
+    let tabs = [];
+    let activeTab = null;
+
+    async function loadTabs() {
+      const res = await fetch('docs.json');
+      tabs = await res.json();
+      if (tabs.length > 0) {
+        setActiveTab(tabs[0]);
+      }
+      renderSidebar();
+    }
+
+    function renderSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.innerHTML = '';
+      tabs.forEach(tab => {
+        const btn = document.createElement('button');
+        btn.textContent = tab.title;
+        btn.className = activeTab && activeTab.id === tab.id ? 'active' : '';
+        btn.onclick = () => setActiveTab(tab);
+        sidebar.appendChild(btn);
+      });
+    }
+
+    async function setActiveTab(tab) {
+      activeTab = tab;
+      renderSidebar();
+      const res = await fetch(tab.file);
+      const md = await res.text();
+      document.getElementById('content').innerHTML = marked.parse(md);
+    }
+
+    loadTabs();
+  </script>
+</body>
+</html>
