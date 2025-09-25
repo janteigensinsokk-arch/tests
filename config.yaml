@@ -9,3 +9,6 @@ tabs:
   - id: setup
     title: "Setup"
     file: "setup.md"
+  - id: faq
+    title: "FAQ"
+    file: "faq.md"
