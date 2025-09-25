@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Documentation</title>
 
-  <!-- GitHub Markdown CSS for true GitHub look -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css">
-
-  <!-- highlight.js theme -->
+  <!-- Styles for highlight.js -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github.min.css">
 
   <style>
@@ -19,18 +16,19 @@
     aside button.active { background: #0070f3; color: white; border-color: #0070f3; }
     main { padding: 1.5rem; }
     article { max-width: 800px; line-height: 1.6; }
-    pre { position: relative; overflow: auto; border-radius: 6px; margin: 1em 0; padding: 16px; background-color: #f6f8fa; }
+    pre { position: relative; background: #f6f8fa; padding: 1rem; border-radius: 0.5rem; overflow: auto; }
     pre button.copy-btn {
-      position: absolute; top: 8px; right: 8px;
+      position: absolute; top: 0.5rem; right: 0.5rem;
       background: #0070f3; color: #fff;
-      border: none; border-radius: 4px;
-      padding: 4px 8px; cursor: pointer;
+      border: none; border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem; cursor: pointer;
       font-size: 0.75rem;
     }
     pre button.copy-btn:hover { background: #005bb5; }
+    table { border-collapse: collapse; margin: 1rem 0; width: 100%; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 0.5rem; text-align: left; }
     .error { color: #b00020; font-weight: bold; }
-    /* make markdown-body fill main content */
-    article.markdown-body { padding: 0; }
   </style>
 </head>
 <body>
@@ -39,12 +37,13 @@
     <div id="sidebar">Loading...</div>
   </aside>
   <main>
-    <article id="content" class="markdown-body">Loading content...</article>
+    <article id="content">Loading content...</article>
   </main>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js" defer></script>
+  <!-- Full highlight.js bundle (all languages including Lua) -->
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/build/highlight.pack.js" defer></script>
 
   <script defer>
