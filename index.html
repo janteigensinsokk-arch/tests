@@ -4,10 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Documentation</title>
+
   <!-- marked (Markdown -> HTML) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <!-- js-yaml (YAML parser) -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/typescript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/html.min.js"></script>
   <style>
     body { display: grid; grid-template-columns: 1fr 3fr; min-height: 100vh; margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
     aside { background: #f3f3f3; padding: 1rem; border-right: 1px solid #ccc; }
@@ -16,6 +23,18 @@
     aside button.active { background: #0070f3; color: white; border-color: #0070f3; }
     main { padding: 1.5rem; }
     article { max-width: 800px; line-height: 1.6; }
+    pre { position: relative; background: #f6f8fa; padding: 1rem; border-radius: 0.5rem; overflow: auto; }
+    pre button.copy-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: #0070f3; color: #fff;
+      border: none; border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem; cursor: pointer;
+      font-size: 0.75rem;
+    }
+    pre button.copy-btn:hover { background: #005bb5; }
+    table { border-collapse: collapse; margin: 1rem 0; width: 100%; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 0.5rem; text-align: left; }
     .error { color: #b00020; font-weight: bold; }
   </style>
 </head>
@@ -33,6 +52,7 @@
       let tabs = [];
       let activeTab = null;
 
+      // Render sidebar buttons
       function renderSidebar() {
         const sidebarEl = document.getElementById("sidebar");
         if (!sidebarEl) return;
@@ -67,8 +87,28 @@
           const res = await fetch(tab.file, { cache: "no-cache" });
           if (!res.ok) throw new Error("Failed to fetch " + tab.file + " (" + res.status + ")");
           const md = await res.text();
-          const mk = window.marked ? window.marked.parse(md) : md.replace(/</g, "&lt;");
-          document.getElementById("content").innerHTML = mk;
+          const html = window.marked.parse(md, { gfm: true }); // GitHub Flavored Markdown (tables)
+          const contentEl = document.getElementById("content");
+          contentEl.innerHTML = html;
+
+          // Highlight code and add copy buttons
+          contentEl.querySelectorAll("pre code").forEach(block => {
+            hljs.highlightElement(block);
+
+            const pre = block.parentElement;
+            if (!pre.querySelector("button.copy-btn")) {
+              const btn = document.createElement("button");
+              btn.className = "copy-btn";
+              btn.textContent = "Copy";
+              btn.onclick = () => {
+                navigator.clipboard.writeText(block.innerText).then(() => {
+                  btn.textContent = "Copied!";
+                  setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+                });
+              };
+              pre.appendChild(btn);
+            }
+          });
         } catch (err) {
           renderError("Error loading content: " + (err && err.message ? err.message : String(err)));
         }
