@@ -9,9 +9,9 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <!-- js-yaml -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <!-- highlight.js -->
+  <!-- highlight.js full bundle -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/common.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/highlight.min.js"></script>
 
   <style>
     body { display: grid; grid-template-columns: 1fr 3fr; min-height: 100vh; margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
@@ -78,6 +78,7 @@
         if (!contentEl) return;
 
         contentEl.querySelectorAll("pre code").forEach(block => {
+          // Default to plaintext if no language
           if (!block.className.includes("language-")) block.className = "language-plaintext";
           hljs.highlightElement(block);
 
@@ -111,7 +112,7 @@
           const contentEl = document.getElementById("content");
           contentEl.innerHTML = marked.parse(md, { gfm: true });
 
-          // Highlight code after DOM updates
+          // Highlight code blocks and add copy buttons
           enhanceCodeBlocks();
         } catch (err) {
           renderError("Error loading content: " + (err && err.message ? err.message : String(err)));
