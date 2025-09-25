@@ -9,12 +9,10 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <!-- js-yaml (YAML parser) -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <!-- highlight.js -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/javascript.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/typescript.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11/lib/languages/html.min.js"></script>
+  <!-- highlight.js full bundle -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/common.min.js"></script>
+
   <style>
     body { display: grid; grid-template-columns: 1fr 3fr; min-height: 100vh; margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
     aside { background: #f3f3f3; padding: 1rem; border-right: 1px solid #ccc; }
@@ -52,7 +50,6 @@
       let tabs = [];
       let activeTab = null;
 
-      // Render sidebar buttons
       function renderSidebar() {
         const sidebarEl = document.getElementById("sidebar");
         if (!sidebarEl) return;
@@ -61,12 +58,12 @@
           sidebarEl.textContent = "No docs found.";
           return;
         }
-        tabs.forEach(function (tab) {
+        tabs.forEach(tab => {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.textContent = tab.title || tab.id || "Untitled";
           btn.className = activeTab && activeTab.id === tab.id ? "active" : "";
-          btn.onclick = function () { setActiveTab(tab); };
+          btn.onclick = () => setActiveTab(tab);
           sidebarEl.appendChild(btn);
         });
       }
@@ -87,28 +84,28 @@
           const res = await fetch(tab.file, { cache: "no-cache" });
           if (!res.ok) throw new Error("Failed to fetch " + tab.file + " (" + res.status + ")");
           const md = await res.text();
-          const html = window.marked.parse(md, { gfm: true }); // GitHub Flavored Markdown (tables)
           const contentEl = document.getElementById("content");
-          contentEl.innerHTML = html;
+          contentEl.innerHTML = marked.parse(md, { gfm: true });
 
-          // Highlight code and add copy buttons
-          contentEl.querySelectorAll("pre code").forEach(block => {
-            hljs.highlightElement(block);
+          if (window.hljs) {
+            contentEl.querySelectorAll("pre code").forEach(block => {
+              hljs.highlightElement(block);
 
-            const pre = block.parentElement;
-            if (!pre.querySelector("button.copy-btn")) {
-              const btn = document.createElement("button");
-              btn.className = "copy-btn";
-              btn.textContent = "Copy";
-              btn.onclick = () => {
-                navigator.clipboard.writeText(block.innerText).then(() => {
-                  btn.textContent = "Copied!";
-                  setTimeout(() => { btn.textContent = "Copy"; }, 1500);
-                });
-              };
-              pre.appendChild(btn);
-            }
-          });
+              const pre = block.parentElement;
+              if (!pre.querySelector("button.copy-btn")) {
+                const btn = document.createElement("button");
+                btn.className = "copy-btn";
+                btn.textContent = "Copy";
+                btn.onclick = () => {
+                  navigator.clipboard.writeText(block.innerText).then(() => {
+                    btn.textContent = "Copied!";
+                    setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+                  });
+                };
+                pre.appendChild(btn);
+              }
+            });
+          }
         } catch (err) {
           renderError("Error loading content: " + (err && err.message ? err.message : String(err)));
         }
