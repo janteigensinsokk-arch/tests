@@ -1,0 +1,11 @@
+site:
+  name: "My Documentation Site"
+  version: "1.0.0"
+
+tabs:
+  - id: intro
+    title: "Introduction"
+    file: "intro.md"
+  - id: setup
+    title: "Setup"
+    file: "setup.md"
